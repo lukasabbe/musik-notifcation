@@ -23,7 +23,9 @@ RUN apk add --no-cache python3 make g++
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
-# Optional: volume-mount a persistent database.db, or it lives inside the container
-VOLUME ["/app/database.db"]
+# The database is created at /app/database.db (the app runs from WORKDIR).
+# To persist it across restarts, bind-mount the file on the host
+# (create it first: touch database.db, then:
+#   docker run -v "$PWD/database.db:/app/database.db" musik-notifcation)
 
 CMD ["node", "dist/index.js"]
